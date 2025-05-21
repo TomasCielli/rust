@@ -77,4 +77,4 @@ Todos los ejercicios resueltos se encuentran dentro de la carpeta [_src_](https:
 
 `Índice de Entregables`
 
-###[**Entregable 1**](https://github.com/TomasCielli/Rust/blob/main/Practica/src/entregables/entregable_1.rs)
+[**Entregable 1**](https://github.com/TomasCielli/Rust/blob/main/Practica/src/entregables/entregable_1.rs)
