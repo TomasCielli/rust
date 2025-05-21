@@ -1,3 +1,29 @@
+/*
+
+📘 TP3 - Ejercicio 6 - Funcionalidad adicional
+
+Deberán agregar una funcionalidad al ejercicio que permita retornar un informe detallado del rendimiento académico de un estudiante.
+
+Este informe debe incluir:
+Nombre e identificación del estudiante.,
+Cantidad total de exámenes rendidos.,
+Promedio general de notas.,
+Nota más alta y la materia correspondiente.,
+Nota más baja y la materia correspondiente.,
+
+🔧 La funcionalidad deberá implementarse como un método asociado del estudiante llamado generar_informe.
+En caso de que el estudiante no haya rendido ningún examen, no debe retornarse ningún informe.
+
+📌 Requisitos:
+La funcionalidad debe integrarse naturalmente con las estructuras ya definidas.,
+Se espera una solución robusta ante distintas situaciones, incluyendo estudiantes sin exámenes.,
+Se debe acompañar con al menos dos tests unitarios que validen su correcto funcionamiento.,
+
+🛠️ Durante la evaluación:
+Deberán presentar una estrategia clara para encarar esta funcionalidad, explicando cómo organizarán los datos y qué métodos planean utilizar.
+La versión final (V2) deberá ajustarse fielmente a la estrategia presentada.
+
+*/
 #[derive(Clone)]
 struct Informe {
     nombre: String,

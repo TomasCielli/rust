@@ -71,3 +71,10 @@ Todos los ejercicios resueltos se encuentran dentro de la carpeta [_src_](https:
 * [**Teoría 6**](https://github.com/TomasCielli/Rust/blob/main/Teoria/7.%20clase_06_rust_2025.pdf)
 
 * [**Teoría 7**](https://github.com/TomasCielli/Rust/blob/main/Teoria/8.%20clase_07_2025_rust.pdf)
+
+
+## ENTREGABLES
+
+`Índice de Entregables`
+
+###[**Entregable 1**](https://github.com/TomasCielli/Rust/blob/main/Practica/src/entregables/entregable_1.rs)
