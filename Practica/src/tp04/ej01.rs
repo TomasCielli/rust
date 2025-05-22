@@ -40,4 +40,21 @@ fn cant_primos(numeros: Vec<i64>) -> usize {
     numeros.iter().filter(|x| x.es_primo()).count()
 }
 
-//AGREGAR TESTS
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_cant_primos () {
+        let numeros = vec![-1, 0, 1, 2, 3, 5, 6, 11];
+        assert_eq!(cant_primos(numeros), 4);
+    }
+
+    #[test]
+    fn test_cant_primos_vacio () {
+        let numeros = Vec::new();
+        assert_eq!(cant_primos(numeros), 0);
+    }
+
+}
