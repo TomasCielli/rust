@@ -52,7 +52,7 @@ Todos los ejercicios resueltos se encuentran dentro de la carpeta [_src_](https:
  
  ### [**Práctica 4**](https://github.com/TomasCielli/Rust/blob/main/practica/src/tp04/tp_04_2025_rust.pdf)
 
- * [**Ejercicio 1**](https://github.com/TomasCielli/Rust/blob/main/practica/src/tp04/ej01.rs)
+ * [**Ejercicio 1**](https://github.com/TomasCielli/Rust/blob/main/Practica/src/tp04/ej01.rs)
 
  
   
