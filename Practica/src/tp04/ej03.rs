@@ -224,6 +224,16 @@ impl Usuario {
 
     }
 
+    /*➢  Saber el medio de pago que es más utilizado por los usuarios sobre las 
+    suscripciones activas */ 
+    
+    /*➢  Saber cual es la suscripción más contratada por los usuarios sobre las suscripciones 
+    activas. */
+    
+    /*➢  Saber cuál fue el medio de pago más utilizado. */
+    
+    /*➢  Saber cuál fue la suscripción más contratada. */
+
 
 
 
