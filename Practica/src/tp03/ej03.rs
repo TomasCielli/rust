@@ -1,4 +1,4 @@
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Fecha {
     pub dia: u8,
     pub mes: u8,
