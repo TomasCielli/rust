@@ -156,4 +156,197 @@ fn contar_edades <'a>(personas: &'a Vec<Persona<'a>>) -> [u8; 130] {
 salario y la persona con el mayor salario, en caso de que haya más de una persona en cada 
 categoría desempatar por la edad más grande. */
 
-//FALTAN PUNTO G!!! Y TESTS
+fn min_max_salario<'a>(personas: &'a Vec<Persona<'a>>) -> (Option<&'a Persona<'a>>, Option<&'a Persona<'a>>) { 
+
+    if personas.is_empty() {
+        return (None, None);
+    }
+
+    let mut min = &personas[0];
+    let mut max = &personas[0];  
+
+    personas.iter().for_each(|x| {
+        if x.get_salario() < min.get_salario() || 
+           (x.get_salario() == min.get_salario() && x.get_edad() > min.get_edad()) {
+            min = x;
+        }
+        if x.get_salario() > max.get_salario() || 
+           (x.get_salario() == max.get_salario() && x.get_edad() > max.get_edad()) {
+            max = x;
+        }
+    });
+
+    (Some(min), Some(max))
+}
+
+//Tests
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn crear_personas<'a>() -> Vec<Persona<'a>> {
+        vec![
+            Persona {
+                nombre: "Ana",
+                apellido: "Gomez",
+                direccion: "Calle 1",
+                ciudad: "La Plata",
+                salario: 80000.0,
+                edad: 30,
+            },
+            Persona {
+                nombre: "Luis",
+                apellido: "Martinez",
+                direccion: "Calle 2",
+                ciudad: "La Plata",
+                salario: 120000.0,
+                edad: 40,
+            },
+            Persona {
+                nombre: "Maria",
+                apellido: "Perez",
+                direccion: "Calle 3",
+                ciudad: "Cordoba",
+                salario: 90000.0,
+                edad: 35,
+            },
+            Persona {
+                nombre: "Juan",
+                apellido: "Lopez",
+                direccion: "Calle 4",
+                ciudad: "Cordoba",
+                salario: 90000.0,
+                edad: 50,
+            },
+        ]
+    }
+
+    #[test]
+    fn test_salario_mayor() {
+        let personas = crear_personas();
+        let result = salario_mayor(&personas, 85000.0);
+        assert_eq!(result.len(), 3);
+    }
+
+    #[test]
+    fn test_personas_mayores() {
+        let personas = crear_personas();
+        let result = personas_mayores(&personas, 35, "Cordoba".to_string());
+        assert_eq!(result.len(), 1); // Solo Juan (50) cumple ambas condiciones
+    }
+
+    #[test]
+    fn test_todos_viven_en_true() {
+        let personas = vec![
+            Persona {
+                nombre: "Ana",
+                apellido: "Gomez",
+                direccion: "Calle 1",
+                ciudad: "La Plata",
+                salario: 50000.0,
+                edad: 28,
+            },
+            Persona {
+                nombre: "Carlos",
+                apellido: "Diaz",
+                direccion: "Calle 2",
+                ciudad: "La Plata",
+                salario: 55000.0,
+                edad: 32,
+            },
+        ];
+        assert!(todos_viven_en(&personas, "La Plata".to_string()));
+    }
+
+    #[test]
+    fn test_todos_viven_en_false() {
+        let personas = crear_personas();
+        assert!(!todos_viven_en(&personas, "La Plata".to_string()));
+    }
+
+    #[test]
+    fn test_alguno_vive_en_true() {
+        let personas = crear_personas();
+        assert!(alguno_vive_en(&personas, "Cordoba".to_string()));
+    }
+
+    #[test]
+    fn test_alguno_vive_en_false() {
+        let personas = crear_personas();
+        assert!(!alguno_vive_en(&personas, "Rosario".to_string()));
+    }
+
+    #[test]
+    fn test_esta_la_persona_true() {
+        let personas = crear_personas();
+        let persona = personas[0].clone();
+        assert!(esta_la_persona(&personas, &persona));
+    }
+
+    #[test]
+    fn test_esta_la_persona_false() {
+        let personas = crear_personas();
+        let persona = Persona {
+            nombre: "Otro",
+            apellido: "Otro",
+            direccion: "Otra calle",
+            ciudad: "Otro lugar",
+            salario: 100.0,
+            edad: 1,
+        };
+        assert!(!esta_la_persona(&personas, &persona));
+    }
+
+    #[test]
+    fn test_contar_edades() {
+        let personas = crear_personas();
+        let edades = contar_edades(&personas);
+        assert_eq!(edades[30], 1);
+        assert_eq!(edades[40], 1);
+        assert_eq!(edades[35], 1);
+        assert_eq!(edades[50], 1);
+    }
+
+    #[test]
+    fn test_min_max_salario() {
+        let personas = mock_personas();
+        let (min, max) = min_max_salario(&personas);
+        assert_eq!(min.unwrap().nombre, "Ana"); // 80000.0
+        assert_eq!(max.unwrap().nombre, "Luis"); // 120000.0
+    }
+
+    #[test]
+    fn test_min_max_empate_por_edad() {
+        let personas = vec![
+            Persona {
+                nombre: "P1",
+                apellido: "A",
+                direccion: "D1",
+                ciudad: "X",
+                salario: 100.0,
+                edad: 40,
+            },
+            Persona {
+                nombre: "P2",
+                apellido: "B",
+                direccion: "D2",
+                ciudad: "X",
+                salario: 100.0,
+                edad: 45,
+            },
+        ];
+        let (min, max) = min_max_salario(&personas);
+        assert_eq!(min.unwrap().nombre, "P2");
+        assert_eq!(max.unwrap().nombre, "P2");
+    }
+
+    #[test]
+    fn test_min_max_salario_lista_vacia() {
+        let personas: Vec<Persona> = vec![];
+        let (min, max) = min_max_salario(&personas);
+        assert!(min.is_none());
+        assert!(max.is_none());
+    }
+}
+

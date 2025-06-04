@@ -5,6 +5,7 @@ pub struct Fecha {
     pub anio: u16,
 }
 
+
 impl Fecha {
     pub fn new(dia: u8, mes: u8, anio: u16) -> Fecha {
         Fecha { dia, mes, anio }
@@ -145,6 +146,10 @@ impl Fecha {
             return true;
         }
         return false;
+    }
+
+    pub fn mostrar(&self) -> String {
+        format!("{:02}/{:02}/{}", self.dia, self.mes, self.anio) //:02 agrega un 0 adelante si tiene un solo digito
     }
 }
 
