@@ -310,7 +310,7 @@ mod tests {
 
     #[test]
     fn test_min_max_salario() {
-        let personas = mock_personas();
+        let personas = crear_personas();
         let (min, max) = min_max_salario(&personas);
         assert_eq!(min.unwrap().nombre, "Ana"); // 80000.0
         assert_eq!(max.unwrap().nombre, "Luis"); // 120000.0

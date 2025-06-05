@@ -27,6 +27,11 @@ activas.
 */
 use crate::tp03::ej03::Fecha;
 
+pub trait Buscar {
+
+    fn buscar_tipo(&self) -> usize;
+}
+
 //Distintos tipos de suscripciones
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -35,12 +40,12 @@ enum TipoSuscripcion {
     Clasic,
     Super,
 }
-impl TipoSuscripcion {
+impl Buscar for TipoSuscripcion {
     fn buscar_tipo(&self) -> usize {
         match self {
-            TipoSuscripcion::Basic => 1,
-            TipoSuscripcion::Clasic => 2,
-            TipoSuscripcion::Super => 3,
+            TipoSuscripcion::Basic => 0,
+            TipoSuscripcion::Clasic => 1,
+            TipoSuscripcion::Super => 2,
         }
     }
 }
@@ -65,14 +70,14 @@ enum MedioDePago {
     TransferenciaBancaria{cbu: String},
     Cripto{direccion: String},
 }
-impl MedioDePago {
+impl Buscar for MedioDePago {
     fn buscar_tipo (&self) -> usize{
         match self {
-            MedioDePago::Efectivo => 1,
-            MedioDePago::MercadoPago { cvu } => 2,
-            MedioDePago::TarjetaCredito { numero, vencimiento } => 3,
-            MedioDePago::TransferenciaBancaria { cbu } => 4,
-            MedioDePago::Cripto { direccion } => 5,
+            MedioDePago::Efectivo => 0,
+            MedioDePago::MercadoPago { cvu } => 1,
+            MedioDePago::TarjetaCredito { numero, vencimiento } => 2,
+            MedioDePago::TransferenciaBancaria { cbu } => 3,
+            MedioDePago::Cripto { direccion } => 4,
 
         }
     }
@@ -176,7 +181,7 @@ suscripciones activas  */
         for usuario in self.usuarios.clone() {
             if usuario.suscripcion.is_some() {
                 if let Some(mdp) = usuario.medio_de_pago {
-                    contadores[mdp.buscar_tipo() - 1] += 1;
+                    contadores[mdp.buscar_tipo()] += 1;
                 }
             }
         }
@@ -200,14 +205,14 @@ suscripciones activas  */
         let mut contadores = [0, 0, 0]; 
         for usuario in self.usuarios.clone() {
             if let Some(sus) = usuario.suscripcion {
-                contadores[sus.tipo_suscripcion.buscar_tipo() - 1] += 1;
+                contadores[sus.tipo_suscripcion.buscar_tipo()] += 1;
             }
         }
         let mut max_i = 0;
         let mut max = contadores[0];
-        for (i, &value) in contadores.iter().enumerate() {
-            if value > max {
-                max = value;
+        for (i, &numero) in contadores.iter().enumerate() {
+            if numero > max {
+                max = numero;
                 max_i = i;
             }   
         }
@@ -215,26 +220,46 @@ suscripciones activas  */
         Self::devolver_tipo_suscripcion(max_i)
     }
 
+    /* ➢  Saber cuál fue el medio de pago más utilizado.  */
 
     fn medio_mas_usado (&self) -> String {
-        let mut contadores = [0, 0, 0, 0, 0]; 
-        for usuario in self.usuarios.clone() {
-            if usuario.suscripcion.is_some() {
-                if let Some(mdp) = usuario.medio_de_pago {
-                    contadores[mdp.buscar_tipo() - 1] += 1;
-                }
+        let mut contadores = [0, 0, 0, 0, 0];
+        self.usuarios.iter().for_each(|u| {
+            if u.medio_de_pago.is_some() {
+                contadores[u.medio_de_pago.clone().unwrap().buscar_tipo()] += 1;
             }
-        }
-
+        });
         let mut max_i = 0;
         let mut max = contadores[0];
-        for (i, &valor) in contadores.iter().enumerate() {
-            if valor > max {
-                max = valor;
+        for (i, &numero) in contadores.iter().enumerate() {
+            if numero > max {
+                max = numero;
                 max_i = i;
             }
         }
+        Self::devolver_tipo_pago(max_i)
+    }
 
+
+
+
+    /*➢  Saber cuál fue la suscripción más contratada. */
+
+    fn suscripcion_mas_contratada (&self) -> String {
+        let mut contadores = [0, 0, 0, 0, 0];
+        self.usuarios.iter().for_each(|u| {
+            if u.suscripcion.is_some() {
+                contadores[u.suscripcion.clone().unwrap().tipo_suscripcion.buscar_tipo()] += 1;
+            }
+        });
+        let mut max_i = 0;
+        let mut max = contadores[0];
+        for (i, &numero) in contadores.iter().enumerate() {
+            if numero > max {
+                max = numero;
+                max_i = i;
+            }
+        }
         Self::devolver_tipo_pago(max_i)
     }
 }
