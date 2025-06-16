@@ -40,7 +40,7 @@ Nota: Implemente todos los métodos y traits que considere para resolver los eje
 Todos los ejercicios deben resolverse con iterator y closure
 
 */
-
+#![allow(dead_code)]
 #[derive(Clone)]
 
 struct Persona<'a>{ 

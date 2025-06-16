@@ -52,10 +52,9 @@ siguientes acciones:
 */
 
 //USES
-
-use std::collections::HashMap;
+#![allow(dead_code)]
+use std::{collections::HashMap, hash::Hash};
 use crate::tp03::ej03::Fecha;
-
 
 
 //TRAITS
@@ -79,7 +78,7 @@ enum Categoria {
     Otro,
 }
 
-//DEVOLVER STRING EN EL IMPL DEL STRUCT MISMO Y HACER EL TRAIT EXPLICITO!!!!! <-------------------------
+
 impl ParaEnums for Categoria {
 
     fn mostrar(&self) -> String {
@@ -179,17 +178,18 @@ impl Producto {
     }
 
     fn precio_con_descuento(&self, descuentos_por_categoria: &HashMap<Categoria, f64>) -> f64{
-        if let Some(descuento) = descuentos_por_categoria.iter().find(|x| x.0.mostrar() == self.categoria.mostrar()){
-            return (self.get_precio() / 100.0) * descuento.1.clone()
+        if let Some(descuento) = descuentos_por_categoria.get(&self.categoria) {
+            return (self.get_precio() / 100.0) * descuento
         }
         return self.get_precio()
+
     }
 }
 
 
 //PERSONAS
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 struct Persona {
     nombre: String,
     apellido: String,
@@ -381,6 +381,14 @@ impl Vendedor{
         self.salario = salario;
         true
     }
+
+    fn igual(&self, otro: &Self) -> bool {
+        self.get_dni() == otro.get_dni() &&
+        self.get_legajo() == otro.get_legajo() &&
+        self.get_nombre() == otro.get_nombre() &&
+        self.get_apellido() == otro.get_apellido() &&
+        self.get_direccion() == otro.get_direccion()
+    }
 }
 
 
@@ -402,8 +410,8 @@ impl Venta{
     }
 
     fn buscar_descuento(producto: Producto, descuentos_por_categoria: &HashMap<Categoria, f64>) -> f64{
-        if let Some(descuento) = descuentos_por_categoria.iter().find(|x| x.0.mostrar() == producto.categoria.mostrar()){
-            return descuento.1.clone()
+        if let Some(descuento) = descuentos_por_categoria.get(&producto.categoria) {
+            return *descuento
         }
         return 0.0
     }
@@ -414,8 +422,8 @@ impl Venta{
     fn get_cliente(&self) -> &Cliente{
         &self.cliente
     }
-    fn get_vendedor(&self) -> &Vendedor{
-        &self.vendedor
+    fn get_vendedor(&self) -> Vendedor{
+        self.vendedor.clone()
     }
     fn get_medio_de_pago(&self) -> &MedioDePago{
         &self.medio_de_pago
@@ -423,8 +431,28 @@ impl Venta{
     fn get_productos(&self) -> &HashMap<Producto, u32>{
         &self.productos
     }
+    fn set_fecha(&mut self, fecha: Fecha) -> bool{
+        self.fecha = fecha;
+        true
+    }
+    fn set_cliente(&mut self, cliente: Cliente) -> bool{
+        self.cliente = cliente;
+        true
+    }
+    fn set_vendedor(&mut self, vendedor: Vendedor) -> bool{
+        self.vendedor = vendedor;
+        true
+    }
+    fn set_medio_de_pago(&mut self, medio_de_pago: MedioDePago) -> bool{
+        self.medio_de_pago = medio_de_pago;
+        true
+    }
+    fn set_productos(&mut self, productos: HashMap<Producto, u32>) -> bool{
+        self.productos = productos;
+        true
+    }
 
-    
+
 
     fn precio_final(&self, descuentos_por_categoria: &HashMap<Categoria, f64>, descuento_suscripto: f64) -> f64{
         let mut total = 0.0;
@@ -437,10 +465,49 @@ impl Venta{
         }
         total
     }
+
+
 }
-
-//SE PODRIA HACER EL APLICAR DESCUENTO A LOS F64 CON TRAITS
-
 /*    ➢  Para llevar un control de las ventas realizadas, se debe implementar un reporte que 
     permita visualizar las ventas totales por categoría de producto y otro por vendedor.  */
 
+struct Reporte {
+    ventas: Vec<Venta>,
+}
+impl Reporte {
+    
+    fn new(ventas: Vec<Venta>) -> Reporte {
+        Reporte{ventas}
+    }
+
+    fn ventas_por_categoria(&self, descuentos_por_categoria: &HashMap<Categoria, f64>, descuento_suscripto: f64) -> HashMap<Categoria, f64> {
+        let mut reporte: HashMap<Categoria, f64> = HashMap::new();
+        for venta in &self.ventas {
+            for (producto, cantidad) in venta.get_productos() {
+                let categoria = producto.get_categoria();
+                let precio_con_descuentos = if venta.get_cliente().tiene_descuento() {
+                    (producto.precio_con_descuento(descuentos_por_categoria) / 100.0) * descuento_suscripto
+                } else {
+                    producto.precio_con_descuento(descuentos_por_categoria)
+                };
+                let total_producto = precio_con_descuentos * (*cantidad as f64);
+                *reporte.entry(categoria).or_insert(0.0) += total_producto;
+            }
+        }
+        reporte
+    }
+
+    fn  ventas_por_vendedor(&self, descuentos_por_categoria: &HashMap<Categoria, f64>, descuento_suscripto: f64) -> Vec<(Vendedor, f64)> {
+        let mut reporte: Vec<(Vendedor, f64)> = Vec::new();
+        for venta in &self.ventas {
+            let vendedor = venta.get_vendedor();
+            let total_venta = venta.precio_final(descuentos_por_categoria, descuento_suscripto);
+            if let Some((_, total)) = reporte.iter_mut().find(|(v, _)| v.igual(&vendedor)) {
+                *total += total_venta;
+            } else {
+                reporte.push((vendedor, total_venta));
+            }
+        }
+        reporte
+    }
+}

@@ -1,4 +1,11 @@
-#[derive(Debug, Clone)]
+impl PartialEq for Fecha{
+    
+    fn eq(&self, otro: &Self) -> bool{
+        return (self.anio == otro.anio) && (self.mes == otro.mes) && (self.dia == otro.dia)
+    }
+}
+
+#[derive(Debug, Clone, Eq)]
 pub struct Fecha {
     pub dia: u8,
     pub mes: u8,

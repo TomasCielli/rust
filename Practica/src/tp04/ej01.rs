@@ -6,6 +6,7 @@ según corresponda. Utilice la función iter sobre el vector y aplique un closur
 resolverlo. 
 
 */
+#![allow(dead_code)]
 pub trait Primos {
 
     fn es_primo(&self) -> bool;

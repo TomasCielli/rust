@@ -25,6 +25,8 @@ activas.
 ➢  Saber cuál fue la suscripción más contratada.
 
 */
+#![allow(dead_code)]
+
 use crate::tp03::ej03::Fecha;
 
 pub trait Buscar {
